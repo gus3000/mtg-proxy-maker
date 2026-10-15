@@ -10,6 +10,7 @@ type SidebarProps = {
 	onAddCard: (cardName: string) => void;
 	onClearList: () => void;
 	onRawListImport: (rawCardList: string) => void;
+	onCsvListImport: (csvCardList: string) => void;
 };
 
 const deckExample = `
@@ -91,8 +92,11 @@ const deckExample = `
 1 Xyris, the Writhing Storm
 `.trim()
 
+const csvExample = "manaCost,oracleText,power,rarity,set,setCustomUrl,title,totalVariants,toughness,typeText"
+
 export default function Sidebar(props: SidebarProps) {
 	const [rawCardListDialogOpen, setRawCardListDialogOpen] = createSignal(false);
+	const [CardListCsvDialogOpen, setCardListCsvDialogOpen] = createSignal(false);
 
 	return (
 		<>
@@ -129,6 +133,13 @@ export default function Sidebar(props: SidebarProps) {
 						onClick={() => setRawCardListDialogOpen(true)}
 					>
 						Import from MTGO
+					</button>
+					<button
+						type="button"
+						class="btn btn-secondary w-full"
+						onClick={() => setCardListCsvDialogOpen(true)}
+					>
+						Import from CSV
 					</button>
 					<button
 						type="button"
@@ -195,6 +206,42 @@ export default function Sidebar(props: SidebarProps) {
 								class="btn btn-secondary flex-1"
 								type="reset"
 								onClick={() => setRawCardListDialogOpen(false)}
+							>
+								Cancel
+							</button>
+							<button type="submit" class="btn btn-primary flex-1">Submit</button>
+						</div>
+					</div>
+				</form>
+			</dialog>
+			<dialog
+				class="z-20 modal modal-bottom sm:modal-middle"
+				open={CardListCsvDialogOpen()}
+			>
+				<form method="dialog" class="modal-backdrop bg-black/50" onClick={() => setCardListCsvDialogOpen(false)} >
+					<button>close</button>
+				</form>
+				<form
+					method="dialog"
+					class="modal-box flex flex-col gap-5 bg-stone-600"
+					onSubmit={async (e) => {
+						e.preventDefault();
+						const rawCardList = (e.target as HTMLFormElement).cardList.value;
+						props.onCsvListImport(rawCardList);
+						setCardListCsvDialogOpen(false);
+					}}
+				>
+					<label for="cardList" class="label-text text-white">
+						Paste your csv file
+					</label>
+					<textarea name="cardList" class="textarea h-full" rows={12} placeholder={csvExample} />
+
+					<div class="modal-action">
+						<div class="w-full flex gap-2">
+							<button
+								class="btn btn-secondary flex-1"
+								type="reset"
+								onClick={() => setCardListCsvDialogOpen(false)}
 							>
 								Cancel
 							</button>

@@ -15,6 +15,9 @@ import { Card, getEmptyCard } from "./types/card";
 import { Toaster } from "solid-toast";
 import { CardError } from "./types/error";
 import { toastError } from "./services/toaster";
+import Papa from 'papaparse';
+import { title } from "process";
+import { CsvLine, parseCsvLine } from "./services/csv-parser";
 
 function createResourceStore<T extends {}>(
 	initialValue: T,
@@ -90,7 +93,7 @@ export default function App() {
 		}
 	}
 
-	async function getNewListFromMTGO(mtgoList: string) {
+	async function getNewListFromMTGO(mtgoList: string): Promise<Card[]> {
 		const parsedList = parseMtgo(mtgoList);
 
 		const result = await Promise.allSettled(
@@ -116,6 +119,22 @@ export default function App() {
 		}
 
 		return result.filter((result) => result.status == 'fulfilled').map((result) => (result as PromiseFulfilledResult<Card>).value)
+	}
+
+	async function getNewListFromCsv(csvList: string): Promise<Card[]> {
+		let list = Papa.parse(csvList, {
+			header: true
+		});
+		if (list.errors.length > 0) {
+			console.error("Errors while reading the csv");
+			for (let err of list.errors) {
+				console.error(err);
+			}
+
+			return [];
+		}
+		console.log(list);
+		return list.data.map((line) => parseCsvLine(line as CsvLine));
 	}
 
 	async function getCardList(): Promise<Card[]> {
@@ -159,6 +178,11 @@ export default function App() {
 				onAddCard={fetchAndAddCard}
 				onRawListImport={async (rawList) => {
 					const newList = await getNewListFromMTGO(rawList);
+					setCardList(newList);
+					setSelectedCardIndex(null);
+				}}
+				onCsvListImport={async (csvCardList) => {
+					const newList = await getNewListFromCsv(csvCardList);
 					setCardList(newList);
 					setSelectedCardIndex(null);
 				}}
