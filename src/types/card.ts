@@ -14,6 +14,7 @@ export type Card = {
 	power?: string;
 	rarity?: string;
 	set?: string;
+	setCustomUrl?: string;
 	title: string;
 	totalVariants: number;
 	toughness?: string;

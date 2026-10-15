@@ -372,6 +372,21 @@ export default function EditCardForm(props: {
 								value={props.card().artist ?? ""}
 							/>
 						</label>
+
+						<label class="form-control flex-1 min-w-0">
+							<span class="label-text text-white">Set icon custom url</span>
+							<input
+								name="setCustomUrl"
+								class="input"
+								onInput={(e) =>
+									props.setCard((p) => ({
+										...p,
+										setCustomUrl: e.currentTarget.value,
+									}))
+								}
+								value={props.card().setCustomUrl ?? ""}
+							/>
+						</label>
 					</fieldset>
 
 					<fieldset class="flex flex-col gap-5 p-3">

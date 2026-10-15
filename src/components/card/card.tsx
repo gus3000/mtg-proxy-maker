@@ -82,7 +82,7 @@ export default function CardComponent(props: {
 					manaCost={props.card.manaCost}
 					category={props.card.category}
 				/>
-				<TypeBar type={props.card.typeText} category={props.card.category} />
+				<TypeBar type={props.card.typeText} category={props.card.category} set={props.card.set} rarity={props.card.rarity} setCustomUrl={props.card.setCustomUrl}/>
 				{props.card.category == "Regular" ? (
 					props.card.aspect.frame != "Basic Land" && (
 						<RegularDescription

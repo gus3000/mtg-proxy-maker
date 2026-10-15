@@ -4,6 +4,9 @@ import { Card } from "../../types/card";
 type TypeBarProps = {
 	type: string;
 	category: Card["category"];
+	set?: string;
+	rarity?: string;
+	setCustomUrl?: string;
 };
 
 const style: Record<Card["category"], JSX.CSSProperties> = {
@@ -45,6 +48,20 @@ export default function TypeBar(props: TypeBarProps) {
 			>
 				{props.type}
 			</h1>
+			{props.setCustomUrl != null ? (
+				<img 
+				style={{
+					"max-height":"80%",
+				}}
+				src={props.setCustomUrl}
+				/>
+			) : (
+				<i class={
+					`ss ss-${props.set} ss-${props.rarity}`
+				}></i>
+			)}
+
 		</div>
+
 	);
 }
